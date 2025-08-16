@@ -2,10 +2,26 @@ const User = require("../models/user.model");
 const uploadFile = require("../services/storage.service");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { validationResult } = require("express-validator");
 
 /* Signup controller (POST) */
 async function signup(req, res) {
+	const validationErrors = validationResult(req);
+
+	if (!validationErrors.isEmpty()) {
+		return res.status(400).json({
+			errors: validationErrors.array(),
+		});
+	}
+
 	const profilePicture = req.file;
+
+	if (!profilePicture) {
+		return res.status(400).json({
+			message: "Profile picture is required",
+		});
+	}
+
 	const { email, fullName, password } = req.body;
 
 	try {
@@ -50,15 +66,23 @@ async function signup(req, res) {
 			});
 		}
 	} catch (error) {
+		console.error("Signup error:", error);
 		res.status(400).json({
 			message: "An error occurred during signup",
-			error: error.message,
 		});
 	}
 }
 
 /* Login controller (GET) */
 async function login(req, res) {
+	const validationErrors = validationResult(req);
+
+	if (!validationErrors.isEmpty()) {
+		return res.status(400).json({
+			errors: validationErrors.array(),
+		});
+	}
+
 	const { email, password } = req.body;
 
 	try {
@@ -99,9 +123,9 @@ async function login(req, res) {
 			},
 		});
 	} catch (error) {
+		console.error("Login error:", error);
 		res.status(400).json({
 			message: "An error occurred during login",
-			error: error.message,
 		});
 	}
 }
