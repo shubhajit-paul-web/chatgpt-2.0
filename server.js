@@ -1,14 +1,19 @@
 require("dotenv").config();
+const http = require("http");
 const app = require("./src/app");
 const connectDB = require("./src/db/db");
+const initSocketServer = require("./src/sockets/socket.server");
+
+const httpServer = http.createServer(app);
+const PORT = process.env.PORT || 8000;
 
 // Start the server
 (async () => {
-	const PORT = process.env.PORT || 8000;
-
 	try {
 		await connectDB();
-		app.listen(PORT, () => {
+		initSocketServer(httpServer);
+
+		httpServer.listen(PORT, () => {
 			console.log(`Server is listening on port ${PORT}`);
 		});
 	} catch (error) {
