@@ -6,11 +6,7 @@ const bcrypt = require("bcrypt");
 /* Signup controller (POST) */
 async function signup(req, res) {
 	const profilePicture = req.file;
-	const {
-		email,
-		fullName: { firstName, lastName },
-		password,
-	} = req.body;
+	const { email, fullName, password } = req.body;
 
 	try {
 		const isExistingEmail = await User.findOne({
@@ -23,16 +19,13 @@ async function signup(req, res) {
 			});
 		}
 
-		const profilePictureLink = await uploadFile(profilePicture);
+		const uploadedProfilePicture = await uploadFile(profilePicture);
 		const hashedPassword = await bcrypt.hash(password, 10);
 
 		const createdUser = await User.create({
-			profilePicture: profilePictureLink,
+			profilePicture: uploadedProfilePicture.url,
 			email,
-			fullName: {
-				firstName,
-				lastName,
-			},
+			fullName,
 			password: hashedPassword,
 		});
 
@@ -58,7 +51,8 @@ async function signup(req, res) {
 		}
 	} catch (error) {
 		res.status(400).json({
-			message: error.message,
+			message: "An error occurred during signup",
+			error: error.message,
 		});
 	}
 }
@@ -74,7 +68,7 @@ async function login(req, res) {
 
 		if (!user) {
 			return res.status(401).json({
-				message: "Invalid credentials",
+				message: "Invalid email address",
 			});
 		}
 
@@ -106,9 +100,18 @@ async function login(req, res) {
 		});
 	} catch (error) {
 		res.status(400).json({
-			message: error.message,
+			message: "An error occurred during login",
+			error: error.message,
 		});
 	}
 }
 
-module.exports = { signup, login };
+/* Logout controller (GET) */
+async function logout(req, res) {
+	res.clearCookie("token");
+	res.status(200).json({
+		message: "Logged out successfully",
+	});
+}
+
+module.exports = { signup, login, logout };

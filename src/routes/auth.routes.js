@@ -11,5 +11,6 @@ const storage = multer({
 
 router.post("/signup", storage.single("profilePicture"), authControllers.signup);
 router.get("/login", authControllers.login);
+router.get("/logout", authControllers.logout);
 
 module.exports = router;
