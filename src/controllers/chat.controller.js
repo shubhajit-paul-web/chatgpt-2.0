@@ -1,9 +1,18 @@
 const Chat = require("../models/chat.model");
+const { validationResult } = require("express-validator");
 
 /* Create Chat (POST) */
 async function createChat(req, res) {
-    const user = req.user;
-	const { title } = req.body;
+	const validationErrors = validationResult(req);
+
+	if (!validationErrors.isEmpty()) {
+		return res.status(400).json({
+			errors: validationErrors.array(),
+		});
+	}
+
+	const user = req.user;
+	const title = req.body?.title;
 
 	try {
 		const createdChat = await Chat.create({
@@ -15,7 +24,7 @@ async function createChat(req, res) {
 			res.status(201).json({
 				message: "Chat created successfully",
 				chat: {
-                    _id: createdChat._id,
+					_id: createdChat._id,
 					user: createdChat.user,
 					title: createdChat.title,
 					lastActivity: createdChat.lastActivity,
@@ -23,7 +32,7 @@ async function createChat(req, res) {
 			});
 		}
 	} catch (error) {
-		console.error(error);
+		console.error("createChat controller error:", error.message);
 		res.status(500).json({
 			message: "An error occurred during create chat",
 		});
