@@ -4,7 +4,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 
-/* Signup controller (POST) */
+/**
+ * POST /api/v1/auth/signup
+ * Body: { email, fullName, password }
+ * File: profilePicture
+ */
 async function signup(req, res) {
 	const validationErrors = validationResult(req);
 
@@ -73,7 +77,10 @@ async function signup(req, res) {
 	}
 }
 
-/* Login controller (GET) */
+/**
+ * GET /api/v1/auth/login
+ * Body: { email, password }
+ */
 async function login(req, res) {
 	const validationErrors = validationResult(req);
 
@@ -130,7 +137,9 @@ async function login(req, res) {
 	}
 }
 
-/* Logout controller (GET) */
+/**
+ * GET /api/v1/auth/logout
+ */
 async function logout(req, res) {
 	res.clearCookie("token");
 	res.status(200).json({

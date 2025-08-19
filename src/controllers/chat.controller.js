@@ -1,7 +1,10 @@
 const Chat = require("../models/chat.model");
 const { validationResult } = require("express-validator");
 
-/* Create Chat (POST) */
+/**
+ * POST /api/v1/chat
+ * Body: { title }
+ */
 async function createChat(req, res) {
 	const validationErrors = validationResult(req);
 
