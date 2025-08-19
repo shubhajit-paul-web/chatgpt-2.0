@@ -33,7 +33,7 @@ function initSocketServer(httpServer) {
 		}
 	});
 
-	io.on("connection", (socket) => {
+	io.on("connection", async (socket) => {
 		const userId = socket.user._id;
 		console.log("New socket connection:", socket.id);
 
@@ -48,10 +48,12 @@ function initSocketServer(httpServer) {
 			const chatHistory = await Message.find({
 				chat: messagePayload.chat,
 			})
+				.sort({ createdAt: -1 })
+				.limit(20)
 				.select("content role")
 				.lean();
 
-			const contents = chatHistory.map((chat) => {
+			const contents = chatHistory.reverse().map((chat) => {
 				return {
 					role: chat.role,
 					parts: [{ text: chat.content }],
