@@ -1,9 +1,9 @@
 const { Server } = require("socket.io");
 const cookie = require("cookie");
-const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const aiService = require("../services/ai.service");
 const { createMemory, queryMemory } = require("../services/vector.service");
+const User = require("../models/user.model");
 const Message = require("../models/message.model");
 
 function initSocketServer(httpServer) {
@@ -36,25 +36,24 @@ function initSocketServer(httpServer) {
 
 	io.on("connection", async (socket) => {
 		const userId = socket.user._id;
-		console.log("New socket connection:", socket.id);
 
 		socket.on("ai-message", async (messagePayload) => {
-			const userMessage = await Message.create({
-				user: userId,
-				chat: messagePayload.chat,
-				content: messagePayload.content,
-				role: "user",
-			});
+			const [userMessage, userMessageVector, extractedFacts] = await Promise.all([
+				Message.create({
+					user: userId,
+					chat: messagePayload.chat,
+					content: messagePayload.content,
+					role: "user",
+				}),
+				aiService.generateVector(messagePayload.content),
+				aiService.generateResponse(`
+					From the following text, extract important facts about the user (such as name, preferences, goals, interests, habits, or personality traits). Return the extracted facts in simple plain text. If no meaningful user-related information is found, return "undefined". 
 
-			const userMessageVector = await aiService.generateVector(messagePayload.content);
+					Text: ${messagePayload.content}
+				`),
+			]);
 
-			const extractedFacts = await aiService.generateResponse(`
-								Extract key facts from the following text for long term memory storage, provide in simple and plain text, if there is no facts then return with null: ${messagePayload.content}
-							`);
-
-			console.log("Extracted Facts: ", extractedFacts);
-
-			if (extractedFacts !== "null") {
+			if (extractedFacts !== "undefined") {
 				const extractedFactsVector = await aiService.generateVector(extractedFacts.trim());
 
 				await createMemory({
@@ -68,13 +67,20 @@ function initSocketServer(httpServer) {
 				});
 			}
 
-			const chatHistory = await Message.find({
-				chat: messagePayload.chat,
-			})
-				.sort({ createdAt: -1 })
-				.limit(20)
-				.select("content role")
-				.lean();
+			const [chatHistory, memory] = await Promise.all([
+				Message.find({
+					chat: messagePayload.chat,
+				})
+					.sort({ createdAt: -1 })
+					.limit(20)
+					.select("content role")
+					.lean(),
+				queryMemory({
+					vector: userMessageVector,
+					userId,
+					limit: 3,
+				}),
+			]);
 
 			/* Short Term Memory (STM) */
 			const STM = chatHistory.reverse().map((chat) => {
@@ -85,18 +91,19 @@ function initSocketServer(httpServer) {
 			});
 
 			/* Long Term Memory (LTM) */
-			const LTM = await queryMemory({
-				vector: userMessageVector,
-				userId,
-				limit: 1,
-			});
+			const LTM = {
+				role: "user",
+				parts: [
+					{
+						text: `
+						Here are my previous chats stored in long-term memory, use them to generate response:
+						${memory.map((memory) => memory.metadata.text).join("\n")}
+					`,
+					},
+				],
+			};
 
-			STM[STM.length - 1].parts[0].text += `
-				These are my previous chat's data stored inside long term memory:
-				${LTM.map((memory) => memory.metadata.text).join("\n")}
-			`;
-
-			const responseMessage = await aiService.generateResponse(STM);
+			const responseMessage = await aiService.generateResponse([LTM, ...STM]);
 
 			await Message.create({
 				user: userId,
