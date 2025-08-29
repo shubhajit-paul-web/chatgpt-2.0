@@ -105,16 +105,16 @@ function initSocketServer(httpServer) {
 
 			const responseMessage = await aiService.generateResponse([LTM, ...STM]);
 
+			socket.emit("ai-response", {
+				chat: messagePayload.chat,
+				content: responseMessage,
+			});
+
 			await Message.create({
 				user: userId,
 				chat: messagePayload.chat,
 				content: responseMessage,
 				role: "model",
-			});
-
-			socket.emit("ai-response", {
-				chat: messagePayload.chat,
-				content: responseMessage,
 			});
 		});
 
