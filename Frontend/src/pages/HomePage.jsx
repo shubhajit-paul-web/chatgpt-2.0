@@ -1,4 +1,6 @@
 import PromptInput from "../components/Chat/PromptInput"
+import ModelMessage from "../components/Message/ModelMessage"
+import UserMessage from "../components/Message/UserMessage"
 
 const HomePage = () => {
   return (
@@ -8,8 +10,9 @@ const HomePage = () => {
       </div>
 
       {/* chat messages */}
-      <div className="w-full h-screen px-[10vw] inset-x-0 mx-auto overflow-y-auto">
-        
+      <div className="w-full h-screen flex flex-col gap-10 px-[calc(10vw+0.5rem)] pt-12 inset-x-0 mx-auto overflow-y-auto">
+        {/* <UserMessage />
+        <ModelMessage /> */}
       </div>
       
       <PromptInput />

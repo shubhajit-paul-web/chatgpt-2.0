@@ -3,3 +3,8 @@
 html {
     color-scheme: dark;
 }
+
+button {
+    cursor: pointer;
+    user-select: none;
+}
