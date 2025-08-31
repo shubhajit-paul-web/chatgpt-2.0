@@ -78,7 +78,7 @@ async function signup(req, res) {
 }
 
 /**
- * GET /api/v1/auth/login
+ * POST /api/v1/auth/login
  * Body: { email, password }
  */
 async function login(req, res) {
@@ -138,6 +138,13 @@ async function login(req, res) {
 }
 
 /**
+ * GET /api/v1/auth/profile
+ */
+async function getProfile(req, res) {
+	res.status(200).json(req.user);
+}
+
+/**
  * GET /api/v1/auth/logout
  */
 async function logout(req, res) {
@@ -147,4 +154,4 @@ async function logout(req, res) {
 	});
 }
 
-module.exports = { signup, login, logout };
+module.exports = { signup, login, getProfile, logout };

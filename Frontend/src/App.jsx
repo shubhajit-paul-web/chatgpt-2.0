@@ -1,13 +1,11 @@
-import Sidebar from "./components/Sidebar"
-import AppRoutes from "./routes/AppRoutes"
+import PageLoader from "./components/PageLoader";
+import useAuthenticateUser from "./hooks/useAuthenticateUser";
+import AppRoutes from "./routes/AppRoutes";
 
 const App = () => {
-  return (
-    <div className="flex">
-      <Sidebar />
-      <AppRoutes />
-    </div>
-  )
-}
+	const isLoading = useAuthenticateUser();
 
-export default App
+	return isLoading ? <PageLoader /> : <AppRoutes />;
+};
+
+export default App;

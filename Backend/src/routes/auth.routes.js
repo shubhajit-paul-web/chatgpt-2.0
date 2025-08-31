@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const authControllers = require("../controllers/auth.controller");
 const authValidators = require("../validators/auth.validators");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
@@ -11,7 +12,8 @@ const storage = multer({
 });
 
 router.post("/signup", storage.single("profilePicture"), authValidators.signupValidation, authControllers.signup);
-router.get("/login", authValidators.loginValidation, authControllers.login);
+router.post("/login", authValidators.loginValidation, authControllers.login);
+router.get("/profile", authMiddleware.authUser, authControllers.getProfile);
 router.get("/logout", authControllers.logout);
 
 module.exports = router;
