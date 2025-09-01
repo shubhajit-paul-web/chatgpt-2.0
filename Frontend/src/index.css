@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "highlight.js/styles/github-dark.css";
+@plugin "@tailwindcss/typography";
 
 html {
     color-scheme: dark;
@@ -7,4 +9,21 @@ html {
 button {
     cursor: pointer;
     user-select: none;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table thead {
+    background-color: #23232389;
+    font-size: 1rem;
+}
+
+.prose table th,
+.prose table td {
+    border: 1px solid #3f3f46;
+    padding: 0.8rem;
 }

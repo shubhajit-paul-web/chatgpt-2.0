@@ -57,8 +57,4 @@ async function getChats(req, res) {
 	res.status(200).json(allChats);
 }
 
-async function getChat(req, res) {
-	
-}
-
-module.exports = { createChat, getChats, getChat };
+module.exports = { createChat, getChats };

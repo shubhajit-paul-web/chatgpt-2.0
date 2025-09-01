@@ -5,6 +5,7 @@ const cors = require("cors");
 /* Routes */
 const authRoutes = require("./routes/auth.routes");
 const chatRoutes = require("./routes/chat.routes");
+const messagesRoutes = require("./routes/messages.route");
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.use(cors({
 /* Using routes */
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/chat", chatRoutes);
+app.use("/api/v1/messages", messagesRoutes);
 
 module.exports = app;

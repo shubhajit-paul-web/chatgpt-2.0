@@ -20,8 +20,7 @@ const Sidebar = () => {
 
 			{/* New chat button */}
 			<button onClick={showChatModel} className="w-full flex items-center gap-2.5 text-lg font-medium bg-gray-100/15 hover:bg-gray-100/10 transition-colors duration-200 text-zinc-100 rounded-xl py-3 px-4 mt-20">
-				<SquarePen size="1.3rem" />
-				New chat
+				<SquarePen size="1.3rem" /> New chat
 			</button>
 
 			{/* Chats list */}

@@ -27,11 +27,10 @@ const ChatList = () => {
 	if (loading) {
 		return <div className="mt-10 text-lg text-zinc-400 animate-pulse">Loading chats...</div>;
 	}
-	console.log(chats);
-	
+
 	return (
 		<div>
-			<h2 className="text-zinc-400 font-medium text-md mt-10 mb-1 ml-3">Chats</h2>
+			<h2 className="text-zinc-500 font-medium text-lg mt-10 mb-1 ml-3">Chats</h2>
 			<div className="flex flex-col gap-1 pb-20">
 				{chats.length ? (
 					chats.map((chat) => {
