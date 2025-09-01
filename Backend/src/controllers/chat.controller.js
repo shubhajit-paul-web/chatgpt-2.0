@@ -42,4 +42,23 @@ async function createChat(req, res) {
 	}
 }
 
-module.exports = { createChat };
+/**
+ * GET /api/v1/chat
+ */
+async function getChats(req, res) {
+	const userId = req.user._id;
+
+	const allChats = await Chat.find({
+		user: userId,
+	})
+		.sort({ createdAt: -1 })
+		.lean();
+
+	res.status(200).json(allChats);
+}
+
+async function getChat(req, res) {
+	
+}
+
+module.exports = { createChat, getChats, getChat };

@@ -5,6 +5,10 @@ const chatValidators = require("../validators/chat.validator");
 
 const router = express.Router();
 
-router.post("/", authMiddleware.authUser, chatValidators.createChatValidation, chatController.createChat);
+router.use(authMiddleware.authUser);
+
+router.route("/")
+    .post(chatValidators.createChatValidation, chatController.createChat)
+    .get(chatController.getChats)
 
 module.exports = router;

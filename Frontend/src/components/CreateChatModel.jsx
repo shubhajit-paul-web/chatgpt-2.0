@@ -1,3 +1,4 @@
+import api from "../axios/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { closeCreateChatModel } from "../features/chatModel/chatModelSlice";
 import { useForm } from "react-hook-form";
@@ -17,7 +18,11 @@ const CreateChatModel = () => {
 	}
 
 	async function createNewChat(data) {
-		console.log(data);
+		const response = await api.post("/chat", {
+			title: data.chatTitle,
+		});
+		
+		console.log(response);
 
 		hideChatModel();
 		reset();

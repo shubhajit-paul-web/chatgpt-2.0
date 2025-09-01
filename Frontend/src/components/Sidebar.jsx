@@ -4,6 +4,7 @@ import UserProfile from "./UserProfile";
 import SidebarHeader from "./SidebarHeader";
 import { useDispatch } from "react-redux";
 import { openCreateChatModel } from "../features/chatModel/chatModelSlice";
+import ChatList from "./Chat/ChatList";
 
 const Sidebar = () => {
 	const dispatch = useDispatch();
@@ -24,16 +25,7 @@ const Sidebar = () => {
 			</button>
 
 			{/* Chats list */}
-			<div>
-				<h2 className="text-zinc-400 font-medium text-md mt-10 mb-1 ml-3">Chats</h2>
-				<div className="flex flex-col gap-1 pb-6">
-					{Array(30)
-						.fill(0)
-						.map((_, index) => (
-							<ChatTitle chatId={index} title={`Chat title ${index + 1}`} key={index} />
-						))}
-				</div>
-			</div>
+			<ChatList />
 
 			{/* Profile - bottom */}
 			<UserProfile />
