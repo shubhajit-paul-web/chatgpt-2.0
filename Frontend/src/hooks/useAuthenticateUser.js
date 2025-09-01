@@ -15,13 +15,13 @@ const useAuthenticateUser = () => {
 
 			if (response.status === 200) {
 				dispatch(login(response.data));
-				setLoading(false);
 				navigate("/chat");
 			} else {
 				navigate("/login");
 			}
 		} catch (error) {
 			console.error("Get Profile Error:", error);
+			navigate("/login");
 		} finally {
 			setLoading(false);
 		}
