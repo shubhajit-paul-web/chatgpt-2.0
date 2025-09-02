@@ -7,7 +7,12 @@ const User = require("../models/user.model");
 const Message = require("../models/message.model");
 
 function initSocketServer(httpServer) {
-	const io = new Server(httpServer);
+	const io = new Server(httpServer, {
+		cors: {
+			origin: "http://localhost:5173",
+			credentials: true,
+		},
+	});
 
 	/* Middleware - Authenticate user */
 	io.use(async (socket, next) => {
