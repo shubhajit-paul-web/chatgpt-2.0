@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+	isSocketConnected: false,
 	isSending: false,
 	messages: [],
 };
@@ -9,6 +10,9 @@ const messagesSlice = createSlice({
 	name: "messages",
 	initialState,
 	reducers: {
+		setIsSocketConnected: (state, { payload }) => {
+			state.isSocketConnected = payload;
+		},
 		messageSending: (state, { payload }) => {
 			state.isSending = payload;
 		},
@@ -22,5 +26,5 @@ const messagesSlice = createSlice({
 	},
 });
 
-export const { messageSending, setMessages } = messagesSlice.actions;
+export const { setIsSocketConnected, messageSending, setMessages } = messagesSlice.actions;
 export default messagesSlice.reducer;

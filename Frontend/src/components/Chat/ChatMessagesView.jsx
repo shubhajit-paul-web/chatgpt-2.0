@@ -4,12 +4,14 @@ import UserMessage from "../Message/UserMessage";
 import ModelMessage from "../Message/ModelMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { setMessages } from "../../features/messages/messagesSlice";
+import GeneratingResponse from "../Message/GeneratingResponse";
 
 const ChatMessagesView = ({ chatId }) => {
 	const dispatch = useDispatch();
 	const bottomRef = useRef(null);
-	const messages = useSelector((state) => state.messagesReducer.messages);
+	const { messages, isSending: isMessageSending } = useSelector((state) => state.messagesReducer);
 
+	// Fetching chat messages
 	async function getMessages() {
 		if (chatId) {
 			try {
@@ -34,7 +36,7 @@ const ChatMessagesView = ({ chatId }) => {
 	}, [messages]);
 
 	return (
-		<div className="w-full h-screen flex flex-col gap-10 px-[calc(10vw+0.5rem)] pt-12 pb-75 inset-x-0 mx-auto overflow-y-auto">
+		<div className="w-full h-screen flex flex-col gap-10 px-[calc(10vw+0.5rem)] pt-12 pb-60 inset-x-0 mx-auto overflow-y-auto">
 			{messages.map((message, index) => {
 				if (message.role === "user") {
 					return <UserMessage content={message.content} key={message._id || index} />;
@@ -42,6 +44,8 @@ const ChatMessagesView = ({ chatId }) => {
 					return <ModelMessage content={message.content} key={message._id || index} />;
 				}
 			})}
+
+			{isMessageSending && <GeneratingResponse />}
 
 			<div ref={bottomRef} />
 		</div>

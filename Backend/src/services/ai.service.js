@@ -8,7 +8,6 @@ async function generateResponse(content) {
 		contents: content,
 		config: {
 			temperature: 0.7,
-			maxOutputTokens: 1024,
 			systemInstruction: `
 				[Role / Identity]  
 				You are OpenAI 2.0 (Created by Shubhajit Paul) — a helpful, smart, and approachable AI assistant.  

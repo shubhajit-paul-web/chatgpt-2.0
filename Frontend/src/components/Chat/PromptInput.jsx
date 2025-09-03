@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { messageSending, setMessages } from "../../features/messages/messagesSlice";
+import { messageSending, setIsSocketConnected, setMessages } from "../../features/messages/messagesSlice";
 
 const PromptInput = () => {
 	const params = useParams();
@@ -19,6 +19,11 @@ const PromptInput = () => {
 
 		socket.on("connect", () => {
 			setSocket(socket);
+			dispatch(setIsSocketConnected(true));
+		});
+		
+		socket.on("disconnect", () => {
+			dispatch(setIsSocketConnected(false));
 		});
 	}
 
@@ -57,7 +62,7 @@ const PromptInput = () => {
 		<div className="absolute bg-zinc-800 bottom-0 inset-x-0 mx-auto w-[60vw]">
 			<form onSubmit={handleSubmit(sendMessage)} className="w-full min-h-28 bg-zinc-800 rounded-3xl border border-zinc-600 shadow-2xl shadow-zinc-900/40 p-5">
 				{/* Input */}
-				<textarea {...register("prompt", { required: true })} onKeyDown={handleKeyDown} className="text-xl w-full outline-none" type="text" placeholder="Ask anything" />
+				<textarea rows={2} {...register("prompt", { required: true })} onKeyDown={handleKeyDown} className="text-xl w-full outline-none" type="text" placeholder="Ask anything" />
 
 				{/* Options */}
 				<div className="flex items-center justify-between gap-3 mt-2">

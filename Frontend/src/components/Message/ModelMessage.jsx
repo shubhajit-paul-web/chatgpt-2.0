@@ -6,7 +6,7 @@ import { Copy, RefreshCw, Share, ThumbsDown, ThumbsUp, Volume2 } from "lucide-re
 
 const ModelMessage = ({ content }) => {
 	return (
-		<div className={`w-full h-fit text-xl text-zinc-300 py-4  rounded-xl prose prose-invert max-w-none`}>
+		<div className={`w-full h-fit text-xl/8 text-zinc-300 py-4  rounded-xl prose prose-invert max-w-none`}>
 			<Markdown rehypePlugins={[rehypeHighlight, remarkGfm]}>{content.trim()}</Markdown>
 
 			<div className="flex items-center mt-2.5 text-white/80">
