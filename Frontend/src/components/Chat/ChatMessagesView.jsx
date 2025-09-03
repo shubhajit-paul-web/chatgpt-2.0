@@ -37,13 +37,17 @@ const ChatMessagesView = ({ chatId }) => {
 
 	return (
 		<div className="w-full h-screen flex flex-col gap-10 px-[calc(10vw+0.5rem)] pt-12 pb-60 inset-x-0 mx-auto overflow-y-auto">
-			{messages.map((message, index) => {
-				if (message.role === "user") {
-					return <UserMessage content={message.content} key={message._id || index} />;
-				} else {
-					return <ModelMessage content={message.content} key={message._id || index} />;
-				}
-			})}
+			{messages.length ? (
+				messages.map((message, index) => {
+					if (message.role === "user") {
+						return <UserMessage content={message.content} key={message._id || index} />;
+					} else {
+						return <ModelMessage content={message.content} key={message._id || index} />;
+					}
+				})
+			) : (
+				<p className="text-lg text-zinc-500/80 font-mono italic text-center mt-[25%]">No messages yet. Ask me anything to start the chat.</p>
+			)}
 
 			{isMessageSending && <GeneratingResponse />}
 

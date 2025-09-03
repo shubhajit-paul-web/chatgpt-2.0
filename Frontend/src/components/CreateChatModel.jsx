@@ -1,10 +1,12 @@
 import api from "../axios/axios";
 import { useDispatch, useSelector } from "react-redux";
-import { closeCreateChatModel } from "../features/chatModel/chatModelSlice";
+import { closeCreateChatModel, setChats } from "../features/chatModel/chatModelSlice";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const CreateChatModel = () => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const isModelOpen = useSelector((state) => state.chatModelReducer.isCreateChatModelOpened);
 	const {
 		handleSubmit,
@@ -21,8 +23,11 @@ const CreateChatModel = () => {
 		const response = await api.post("/chat", {
 			title: data.chatTitle,
 		});
-		
-		console.log(response);
+
+		if (response.status === 201) {
+			dispatch(setChats(response.data.chat));
+			navigate(`/chat/${response.data.chat._id}`);
+		}
 
 		hideChatModel();
 		reset();

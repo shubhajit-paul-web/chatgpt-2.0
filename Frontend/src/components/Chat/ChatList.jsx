@@ -1,17 +1,21 @@
+import { useDispatch, useSelector } from "react-redux";
 import api from "../../axios/axios";
 import ChatTitle from "./ChatTitle";
 import { useEffect, useState } from "react";
+import { setChats } from "../../features/chatModel/chatModelSlice";
 
 const ChatList = () => {
+	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(true);
-	const [chats, setChats] = useState([]);
+	const { chats } = useSelector((state) => state.chatModelReducer);
 
 	async function getChats() {
 		try {
 			const response = await api.get("/chat");
 
 			if (response.status === 200) {
-				setChats(response.data);
+				dispatch(setChats(response.data.reverse()));
+				console.log(response.data);
 			}
 		} catch (error) {
 			console.error("Get chats Error:", error);

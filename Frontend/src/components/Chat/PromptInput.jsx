@@ -14,16 +14,21 @@ const PromptInput = () => {
 	const { handleSubmit, register, reset } = useForm();
 	const [socket, setSocket] = useState(null);
 
-	async function socketConnection() {
+	function socketConnection() {
 		const socket = io("http://localhost:3000", { withCredentials: true });
 
 		socket.on("connect", () => {
 			setSocket(socket);
 			dispatch(setIsSocketConnected(true));
 		});
-		
+
 		socket.on("disconnect", () => {
 			dispatch(setIsSocketConnected(false));
+		});
+
+		socket.on("ai-response", (messagePayload) => {
+			dispatch(setMessages(messagePayload));
+			dispatch(messageSending(false));
 		});
 	}
 
@@ -38,11 +43,6 @@ const PromptInput = () => {
 		dispatch(setMessages(userMessage));
 
 		socket.emit("ai-message", userMessage);
-
-		socket.on("ai-response", (messagePayload) => {
-			dispatch(setMessages(messagePayload));
-			dispatch(messageSending(false));
-		});
 
 		reset();
 	}
@@ -62,7 +62,7 @@ const PromptInput = () => {
 		<div className="absolute bg-zinc-800 bottom-0 inset-x-0 mx-auto w-[60vw]">
 			<form onSubmit={handleSubmit(sendMessage)} className="w-full min-h-28 bg-zinc-800 rounded-3xl border border-zinc-600 shadow-2xl shadow-zinc-900/40 p-5">
 				{/* Input */}
-				<textarea rows={2} {...register("prompt", { required: true })} onKeyDown={handleKeyDown} className="text-xl w-full outline-none" type="text" placeholder="Ask anything" />
+				<textarea rows={2} {...register("prompt", { required: true })} onKeyDown={handleKeyDown} autoComplete="false" className="text-xl w-full outline-none" type="text" placeholder="Ask anything" />
 
 				{/* Options */}
 				<div className="flex items-center justify-between gap-3 mt-2">

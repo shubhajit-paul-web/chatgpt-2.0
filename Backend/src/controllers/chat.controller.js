@@ -51,7 +51,7 @@ async function getChats(req, res) {
 	const allChats = await Chat.find({
 		user: userId,
 	})
-		.sort({ createdAt: -1 })
+		.select("_id title createdAt")
 		.lean();
 
 	res.status(200).json(allChats);
