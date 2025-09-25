@@ -21,7 +21,10 @@ const useAuthenticateUser = () => {
 			}
 		} catch (error) {
 			console.error("Get Profile Error:", error);
-			navigate("/login");
+
+			if (error.code === "ERR_BAD_REQUEST") {
+				navigate("/login");
+			}
 		} finally {
 			setLoading(false);
 		}
